@@ -11,7 +11,6 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_document_scanner/flutter_document_scanner.dart';
 import 'package:flutter_document_scanner/src/bloc/app/app.dart';
 import 'package:flutter_document_scanner/src/bloc/crop/crop.dart';
-import 'package:flutter_document_scanner/src/utils/image_utils.dart';
 
 /// Controls interactions throughout the application by means
 /// of the [DocumentScannerController]
@@ -22,15 +21,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   })  : _imageUtils = imageUtils,
         super(AppState.init()) {
     on<AppExternalImageContoursFound>(_externalImageContoursFound);
-
     on<AppPhotoCropped>(_photoCropped);
     on<AppLoadCroppedPhoto>(_loadCroppedPhoto);
   }
 
   final ImageUtils _imageUtils;
-
-  CameraController? _cameraController;
-  late XFile? _pictureTaken;
 
   /// Find the contour from an external image like gallery
   Future<void> _externalImageContoursFound(
@@ -85,11 +80,5 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         contourInitial: event.area,
       ),
     );
-  }
-
-  @override
-  Future<void> close() async {
-    await _cameraController?.dispose();
-    return super.close();
   }
 }

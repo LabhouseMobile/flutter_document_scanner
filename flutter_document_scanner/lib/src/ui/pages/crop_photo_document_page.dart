@@ -19,7 +19,6 @@ import 'package:flutter_document_scanner/src/bloc/crop/crop_state.dart';
 import 'package:flutter_document_scanner/src/ui/widgets/mask_crop.dart';
 import 'package:flutter_document_scanner/src/utils/border_crop_area_painter.dart';
 import 'package:flutter_document_scanner/src/utils/dot_utils.dart';
-import 'package:flutter_document_scanner/src/utils/image_utils.dart';
 
 /// Page to crop a photo
 class CropPhotoDocumentPage extends StatelessWidget {

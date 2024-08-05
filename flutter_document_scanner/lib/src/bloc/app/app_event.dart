@@ -8,51 +8,11 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_document_scanner/src/bloc/app/app_state.dart';
-import 'package:flutter_document_scanner/src/models/area.dart';
-import 'package:flutter_document_scanner_platform_interface/flutter_document_scanner_platform_interface.dart';
+import 'package:flutter_document_scanner/flutter_document_scanner.dart';
 
 /// Class to create events
 abstract class AppEvent extends Equatable {}
-
-/// Event to initialize the app
-class AppCameraInitialized extends AppEvent {
-  /// Create an event instance
-  AppCameraInitialized({
-    required this.cameraLensDirection,
-    required this.resolutionCamera,
-  });
-
-  /// Camera library [CameraLensDirection]
-  final CameraLensDirection cameraLensDirection;
-
-  /// Camera library [ResolutionPreset]
-  final ResolutionPreset resolutionCamera;
-
-  @override
-  List<Object?> get props => [
-        cameraLensDirection,
-        resolutionCamera,
-      ];
-}
-
-/// Event to take a photo
-class AppPhotoTaken extends AppEvent {
-  /// Create an event instance
-  AppPhotoTaken({
-    this.minContourArea,
-  });
-
-  /// Minimum area to detect a contour
-  final double? minContourArea;
-
-  @override
-  List<Object?> get props => [
-        minContourArea,
-      ];
-}
 
 /// Event when an image is passed to it
 class AppExternalImageContoursFound extends AppEvent {

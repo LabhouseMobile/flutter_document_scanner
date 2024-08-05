@@ -13,8 +13,7 @@ import 'package:flutter_document_scanner/flutter_document_scanner.dart';
 
 /// ImageUtils class
 class ImageUtils {
-  FlutterDocumentScannerPlatform get _platform =>
-      FlutterDocumentScannerPlatform.instance;
+  FlutterDocumentScannerPlatform get _platform => FlutterDocumentScannerPlatform.instance;
 
   /// Calculates the rect of the image
   Rect imageRect(Size screenSize) {

@@ -5,20 +5,13 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_document_scanner/src/bloc/app/app_bloc.dart';
-import 'package:flutter_document_scanner/src/bloc/app/app_state.dart';
 import 'package:flutter_document_scanner/src/document_scanner_controller.dart';
 import 'package:flutter_document_scanner/src/ui/pages/crop_photo_document_page.dart';
 import 'package:flutter_document_scanner/src/utils/crop_photo_document_style.dart';
-import 'package:flutter_document_scanner/src/utils/dialogs.dart';
-import 'package:flutter_document_scanner/src/utils/edit_photo_document_style.dart';
 import 'package:flutter_document_scanner/src/utils/general_styles.dart';
-import 'package:flutter_document_scanner/src/utils/model_utils.dart';
-import 'package:flutter_document_scanner/src/utils/take_photo_document_style.dart';
 
 /// This class is the main page of the application
 class DocumentScanner extends StatelessWidget {
@@ -29,12 +22,7 @@ class DocumentScanner extends StatelessWidget {
     this.controller,
     this.generalStyles = const GeneralStyles(),
     this.pageTransitionBuilder,
-    this.initialCameraLensDirection = CameraLensDirection.back,
-    this.resolutionCamera = ResolutionPreset.high,
-    this.takePhotoDocumentStyle = const TakePhotoDocumentStyle(),
     this.cropPhotoDocumentStyle = const CropPhotoDocumentStyle(),
-    this.editPhotoDocumentStyle = const EditPhotoDocumentStyle(),
-    required this.onSave,
   });
 
   /// Controller to execute the different functionalities
@@ -49,33 +37,14 @@ class DocumentScanner extends StatelessWidget {
   /// by using the [AnimatedSwitcherTransitionBuilder]
   final AnimatedSwitcherTransitionBuilder? pageTransitionBuilder;
 
-  /// Camera library [CameraLensDirection]
-  final CameraLensDirection initialCameraLensDirection;
-
-  /// Camera library [ResolutionPreset]
-  final ResolutionPreset resolutionCamera;
-
-  /// It is used to change the style of the [TakePhotoDocumentPage] page
-  /// using the [TakePhotoDocumentStyle] class.
-  final TakePhotoDocumentStyle takePhotoDocumentStyle;
-
   /// It is used to change the style of the [CropPhotoDocumentPage] page
   /// using the [CropPhotoDocumentStyle] class.
   final CropPhotoDocumentStyle cropPhotoDocumentStyle;
 
-  /// It is used to change the style of the [EditDocumentPhotoPage] page
-  /// using the [EditPhotoDocumentStyle] class.
-  final EditPhotoDocumentStyle editPhotoDocumentStyle;
-
-  /// After performing the whole process of capturing the document
-  /// It will return it as [Uint8List].
-  final OnSave onSave;
-
   @override
   Widget build(BuildContext context) {
-    final Dialogs dialogs = Dialogs();
-
     DocumentScannerController _controller = DocumentScannerController();
+
     if (controller != null) {
       _controller = controller!;
     }
@@ -84,39 +53,12 @@ class DocumentScanner extends StatelessWidget {
       create: (BuildContext context) => _controller.bloc,
       child: RepositoryProvider<DocumentScannerController>(
         create: (context) => _controller,
-        child: MultiBlocListener(
-          listeners: [
-            // ? Show default dialogs in Crop Photo
-            BlocListener<AppBloc, AppState>(
-              listenWhen: (previous, current) => current.statusCropPhoto != previous.statusCropPhoto,
-              listener: (context, state) {
-                if (generalStyles.hideDefaultDialogs) return;
-
-                if (state.statusCropPhoto == AppStatus.loading) {
-                  dialogs.defaultDialog(
-                    context,
-                    generalStyles.messageCroppingPicture,
-                  );
-                }
-
-                if (state.statusCropPhoto == AppStatus.success) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ],
-          child: ColoredBox(
-            color: generalStyles.baseColor,
-            child: _View(
-              pageTransitionBuilder: pageTransitionBuilder,
-              generalStyles: generalStyles,
-              takePhotoDocumentStyle: takePhotoDocumentStyle,
-              cropPhotoDocumentStyle: cropPhotoDocumentStyle,
-              editPhotoDocumentStyle: editPhotoDocumentStyle,
-              onSave: onSave,
-              initialCameraLensDirection: initialCameraLensDirection,
-              resolutionCamera: resolutionCamera,
-            ),
+        child: ColoredBox(
+          color: generalStyles.baseColor,
+          child: _View(
+            pageTransitionBuilder: pageTransitionBuilder,
+            generalStyles: generalStyles,
+            cropPhotoDocumentStyle: cropPhotoDocumentStyle,
           ),
         ),
       ),
@@ -128,22 +70,12 @@ class _View extends StatelessWidget {
   const _View({
     this.pageTransitionBuilder,
     required this.generalStyles,
-    required this.takePhotoDocumentStyle,
     required this.cropPhotoDocumentStyle,
-    required this.editPhotoDocumentStyle,
-    required this.onSave,
-    required this.initialCameraLensDirection,
-    required this.resolutionCamera,
   });
 
   final AnimatedSwitcherTransitionBuilder? pageTransitionBuilder;
   final GeneralStyles generalStyles;
-  final TakePhotoDocumentStyle takePhotoDocumentStyle;
   final CropPhotoDocumentStyle cropPhotoDocumentStyle;
-  final EditPhotoDocumentStyle editPhotoDocumentStyle;
-  final OnSave onSave;
-  final CameraLensDirection initialCameraLensDirection;
-  final ResolutionPreset resolutionCamera;
 
   @override
   Widget build(BuildContext context) {

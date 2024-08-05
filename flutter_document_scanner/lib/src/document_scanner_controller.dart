@@ -12,7 +12,6 @@ import 'dart:typed_data';
 import 'package:flutter_document_scanner/flutter_document_scanner.dart';
 import 'package:flutter_document_scanner/src/bloc/app/app.dart';
 import 'package:flutter_document_scanner/src/ui/pages/crop_photo_document_page.dart';
-import 'package:flutter_document_scanner/src/utils/image_utils.dart';
 
 /// This class is responsible for controlling the scanning process
 class DocumentScannerController {
@@ -34,22 +33,6 @@ class DocumentScannerController {
 
   /// Will return the picture cropped on the [CropPhotoDocumentPage].
   Uint8List? get pictureCropped => _appBloc.state.pictureCropped;
-
-  /// Taking the photo
-  ///
-  /// Then find  the contour with the largest area only when
-  /// it exceeds [minContourArea]
-  ///
-  /// [minContourArea] is default 80000.0
-  Future<void> takePhoto({
-    double? minContourArea,
-  }) async {
-    _appBloc.add(
-      AppPhotoTaken(
-        minContourArea: minContourArea,
-      ),
-    );
-  }
 
   /// Find the contour from an external image like gallery
   ///
