@@ -13,8 +13,6 @@ import 'package:flutter_document_scanner/src/bloc/app/app_bloc.dart';
 import 'package:flutter_document_scanner/src/bloc/app/app_state.dart';
 import 'package:flutter_document_scanner/src/document_scanner_controller.dart';
 import 'package:flutter_document_scanner/src/ui/pages/crop_photo_document_page.dart';
-import 'package:flutter_document_scanner/src/ui/pages/edit_document_photo_page.dart';
-import 'package:flutter_document_scanner/src/ui/pages/take_photo_document_page.dart';
 import 'package:flutter_document_scanner/src/utils/crop_photo_document_style.dart';
 import 'package:flutter_document_scanner/src/utils/dialogs.dart';
 import 'package:flutter_document_scanner/src/utils/edit_photo_document_style.dart';
@@ -88,30 +86,9 @@ class DocumentScanner extends StatelessWidget {
         create: (context) => _controller,
         child: MultiBlocListener(
           listeners: [
-            // ? Show default dialogs in Take Photo
-            BlocListener<AppBloc, AppState>(
-              listenWhen: (previous, current) =>
-                  current.statusTakePhotoPage != previous.statusTakePhotoPage,
-              listener: (context, state) {
-                if (generalStyles.hideDefaultDialogs) return;
-
-                if (state.statusTakePhotoPage == AppStatus.loading) {
-                  dialogs.defaultDialog(
-                    context,
-                    generalStyles.messageTakingPicture,
-                  );
-                }
-
-                if (state.statusTakePhotoPage == AppStatus.success) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-
             // ? Show default dialogs in Crop Photo
             BlocListener<AppBloc, AppState>(
-              listenWhen: (previous, current) =>
-                  current.statusCropPhoto != previous.statusCropPhoto,
+              listenWhen: (previous, current) => current.statusCropPhoto != previous.statusCropPhoto,
               listener: (context, state) {
                 if (generalStyles.hideDefaultDialogs) return;
 
@@ -123,47 +100,6 @@ class DocumentScanner extends StatelessWidget {
                 }
 
                 if (state.statusCropPhoto == AppStatus.success) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-
-            // ? Show default dialogs in Edit Photo
-            BlocListener<AppBloc, AppState>(
-              listenWhen: (previous, current) =>
-                  current.statusEditPhoto != previous.statusEditPhoto,
-              listener: (context, state) {
-                if (generalStyles.hideDefaultDialogs) return;
-
-                if (state.statusEditPhoto == AppStatus.loading) {
-                  dialogs.defaultDialog(
-                    context,
-                    generalStyles.messageEditingPicture,
-                  );
-                }
-
-                if (state.statusEditPhoto == AppStatus.success) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-
-            // ? Show default dialogs in Save Photo Document
-            BlocListener<AppBloc, AppState>(
-              listenWhen: (previous, current) =>
-                  current.statusSavePhotoDocument !=
-                  previous.statusSavePhotoDocument,
-              listener: (context, state) {
-                if (generalStyles.hideDefaultDialogs) return;
-
-                if (state.statusSavePhotoDocument == AppStatus.loading) {
-                  dialogs.defaultDialog(
-                    context,
-                    generalStyles.messageSavingPicture,
-                  );
-                }
-
-                if (state.statusSavePhotoDocument == AppStatus.success) {
                   Navigator.pop(context);
                 }
               },
@@ -215,62 +151,29 @@ class _View extends StatelessWidget {
       DeviceOrientation.portraitUp,
     ]);
 
-    return BlocSelector<AppBloc, AppState, AppPages>(
-      selector: (state) => state.currentPage,
-      builder: (context, state) {
-        Widget page = const SizedBox.shrink();
+    final Widget page = CropPhotoDocumentPage(
+      cropPhotoDocumentStyle: cropPhotoDocumentStyle,
+    );
 
-        switch (state) {
-          case AppPages.takePhoto:
-            if (generalStyles.showCameraPreview) {
-              page = TakePhotoDocumentPage(
-                takePhotoDocumentStyle: takePhotoDocumentStyle,
-                initialCameraLensDirection: initialCameraLensDirection,
-                resolutionCamera: resolutionCamera,
-              );
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 400),
+      transitionBuilder: pageTransitionBuilder ??
+          (child, animation) {
+            const begin = Offset(-1, 0);
+            const end = Offset.zero;
+            final tween = Tween(begin: begin, end: end);
 
-              break;
-            }
-
-            page = generalStyles.widgetInsteadOfCameraPreview ??
-                const SizedBox.shrink();
-            break;
-
-          case AppPages.cropPhoto:
-            page = CropPhotoDocumentPage(
-              cropPhotoDocumentStyle: cropPhotoDocumentStyle,
+            final curvedAnimation = CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
             );
-            break;
 
-          case AppPages.editDocument:
-            page = EditDocumentPhotoPage(
-              editPhotoDocumentStyle: editPhotoDocumentStyle,
-              onSave: onSave,
+            return SlideTransition(
+              position: tween.animate(curvedAnimation),
+              child: child,
             );
-            break;
-        }
-
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 400),
-          transitionBuilder: pageTransitionBuilder ??
-              (child, animation) {
-                const begin = Offset(-1, 0);
-                const end = Offset.zero;
-                final tween = Tween(begin: begin, end: end);
-
-                final curvedAnimation = CurvedAnimation(
-                  parent: animation,
-                  curve: Curves.easeOutCubic,
-                );
-
-                return SlideTransition(
-                  position: tween.animate(curvedAnimation),
-                  child: child,
-                );
-              },
-          child: page,
-        );
-      },
+          },
+      child: page,
     );
   }
 }

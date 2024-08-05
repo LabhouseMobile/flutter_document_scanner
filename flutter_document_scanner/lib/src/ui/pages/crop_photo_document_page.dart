@@ -16,7 +16,6 @@ import 'package:flutter_document_scanner/src/bloc/app/app_event.dart';
 import 'package:flutter_document_scanner/src/bloc/crop/crop_bloc.dart';
 import 'package:flutter_document_scanner/src/bloc/crop/crop_event.dart';
 import 'package:flutter_document_scanner/src/bloc/crop/crop_state.dart';
-import 'package:flutter_document_scanner/src/ui/widgets/app_bar_crop_photo.dart';
 import 'package:flutter_document_scanner/src/ui/widgets/mask_crop.dart';
 import 'package:flutter_document_scanner/src/utils/border_crop_area_painter.dart';
 import 'package:flutter_document_scanner/src/utils/dot_utils.dart';
@@ -37,52 +36,42 @@ class CropPhotoDocumentPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
-    return WillPopScope(
-      onWillPop: () => _onPop(context),
-      child: BlocSelector<AppBloc, AppState, File?>(
-        selector: (state) => state.pictureInitial,
-        builder: (context, state) {
-          if (state == null) {
-            return const Center(
-              child: Text('NO IMAGE'),
-            );
-          }
+    return BlocSelector<AppBloc, AppState, File?>(
+      selector: (state) => state.pictureInitial,
+      builder: (context, state) {
+        if (state == null) {
+          return const Center(
+            child: Text('NO IMAGE'),
+          );
+        }
 
-          return BlocProvider(
-            create: (context) => CropBloc(
-              dotUtils: DotUtils(
-                minDistanceDots: cropPhotoDocumentStyle.minDistanceDots,
-              ),
-              imageUtils: ImageUtils(),
-            )..add(
-                CropAreaInitialized(
-                  areaInitial: context.read<AppBloc>().state.contourInitial,
-                  defaultAreaInitial: cropPhotoDocumentStyle.defaultAreaInitial,
-                  image: state,
-                  screenSize: screenSize,
-                  positionImage: Rect.fromLTRB(
-                    cropPhotoDocumentStyle.left,
-                    cropPhotoDocumentStyle.top,
-                    cropPhotoDocumentStyle.right,
-                    cropPhotoDocumentStyle.bottom,
-                  ),
+        return BlocProvider(
+          create: (context) => CropBloc(
+            dotUtils: DotUtils(
+              minDistanceDots: cropPhotoDocumentStyle.minDistanceDots,
+            ),
+            imageUtils: ImageUtils(),
+          )..add(
+              CropAreaInitialized(
+                areaInitial: context.read<AppBloc>().state.contourInitial,
+                defaultAreaInitial: cropPhotoDocumentStyle.defaultAreaInitial,
+                image: state,
+                screenSize: screenSize,
+                positionImage: Rect.fromLTRB(
+                  cropPhotoDocumentStyle.left,
+                  cropPhotoDocumentStyle.top,
+                  cropPhotoDocumentStyle.right,
+                  cropPhotoDocumentStyle.bottom,
                 ),
               ),
-            child: _CropView(
-              cropPhotoDocumentStyle: cropPhotoDocumentStyle,
-              image: state,
             ),
-          );
-        },
-      ),
+          child: _CropView(
+            cropPhotoDocumentStyle: cropPhotoDocumentStyle,
+            image: state,
+          ),
+        );
+      },
     );
-  }
-
-  Future<bool> _onPop(BuildContext context) async {
-    await context
-        .read<DocumentScannerController>()
-        .changePage(AppPages.takePhoto);
-    return false;
   }
 }
 
@@ -99,8 +88,7 @@ class _CropView extends StatelessWidget {
     return MultiBlocListener(
       listeners: [
         BlocListener<AppBloc, AppState>(
-          listenWhen: (previous, current) =>
-              current.statusCropPhoto != previous.statusCropPhoto,
+          listenWhen: (previous, current) => current.statusCropPhoto != previous.statusCropPhoto,
           listener: (context, state) {
             if (state.statusCropPhoto == AppStatus.loading) {
               context.read<CropBloc>().add(CropPhotoByAreaCropped(image));
@@ -108,8 +96,7 @@ class _CropView extends StatelessWidget {
           },
         ),
         BlocListener<CropBloc, CropState>(
-          listenWhen: (previous, current) =>
-              current.imageCropped != previous.imageCropped,
+          listenWhen: (previous, current) => current.imageCropped != previous.imageCropped,
           listener: (context, state) {
             if (state.imageCropped != null) {
               context.read<AppBloc>().add(
@@ -218,8 +205,7 @@ class _CropView extends StatelessWidget {
                               ),
                               child: Container(
                                 width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height:
-                                    cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                height: cropPhotoDocumentStyle.dotSize - (2 * 2),
                                 color: Colors.white,
                               ),
                             ),
@@ -258,8 +244,7 @@ class _CropView extends StatelessWidget {
                               ),
                               child: Container(
                                 width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height:
-                                    cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                height: cropPhotoDocumentStyle.dotSize - (2 * 2),
                                 color: Colors.white,
                               ),
                             ),
@@ -298,8 +283,7 @@ class _CropView extends StatelessWidget {
                               ),
                               child: Container(
                                 width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height:
-                                    cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                height: cropPhotoDocumentStyle.dotSize - (2 * 2),
                                 color: Colors.white,
                               ),
                             ),
@@ -338,8 +322,7 @@ class _CropView extends StatelessWidget {
                               ),
                               child: Container(
                                 width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height:
-                                    cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                height: cropPhotoDocumentStyle.dotSize - (2 * 2),
                                 color: Colors.white,
                               ),
                             ),
@@ -352,15 +335,6 @@ class _CropView extends StatelessWidget {
               ],
             ),
           ),
-
-          // * Default App Bar
-          AppBarCropPhoto(
-            cropPhotoDocumentStyle: cropPhotoDocumentStyle,
-          ),
-
-          // * children
-          if (cropPhotoDocumentStyle.children != null)
-            ...cropPhotoDocumentStyle.children!,
         ],
       ),
     );

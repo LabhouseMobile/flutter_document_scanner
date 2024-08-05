@@ -10,10 +10,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_document_scanner/flutter_document_scanner.dart';
-import 'package:flutter_document_scanner/src/bloc/app/app_bloc.dart';
-import 'package:flutter_document_scanner/src/bloc/app/app_event.dart';
+import 'package:flutter_document_scanner/src/bloc/app/app.dart';
 import 'package:flutter_document_scanner/src/ui/pages/crop_photo_document_page.dart';
-import 'package:flutter_document_scanner/src/ui/pages/take_photo_document_page.dart';
 import 'package:flutter_document_scanner/src/utils/image_utils.dart';
 
 /// This class is responsible for controlling the scanning process
@@ -26,38 +24,9 @@ class DocumentScannerController {
   /// Return the [AppBloc] created
   AppBloc get bloc => _appBloc;
 
-  /// Stream [AppStatus] to know the status while taking the picture
-  Stream<AppStatus> get statusTakePhotoPage {
-    return _appBloc.stream.map((data) => data.statusTakePhotoPage).distinct();
-  }
-
   /// Stream [AppStatus] to know the status while the document is being cropped
   Stream<AppStatus> get statusCropPhoto {
     return _appBloc.stream.map((data) => data.statusCropPhoto).distinct();
-  }
-
-  /// Stream [AppStatus] to know the status while editing the document
-  /// with filters
-  Stream<AppStatus> get statusEditPhoto {
-    return _appBloc.stream.map((data) => data.statusEditPhoto).distinct();
-  }
-
-  /// Stream [FilterType] the current filtering of the document
-  Stream<FilterType> get currentFilterType {
-    return _appBloc.stream.map((data) => data.currentFilterType).distinct();
-  }
-
-  /// Stream [AppStatus] to know the status while saving the document
-  /// with all filters and cropping area
-  Stream<AppStatus> get statusSavePhotoDocument {
-    return _appBloc.stream
-        .map((data) => data.statusSavePhotoDocument)
-        .distinct();
-  }
-
-  /// Stream [AppPages] to know the current page
-  Stream<AppPages> get currentPage {
-    return _appBloc.stream.map((data) => data.currentPage).distinct();
   }
 
   /// Will return the picture taken on the [TakePhotoDocumentPage].
@@ -103,7 +72,6 @@ class DocumentScannerController {
   }
 
   /// Cutting the photo and adjusting the perspective
-  /// then change page to [AppPages.editDocument]
   Future<void> cropPhoto() async {
     _appBloc.add(AppPhotoCropped());
   }
