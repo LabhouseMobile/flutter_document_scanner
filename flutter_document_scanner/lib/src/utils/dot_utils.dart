@@ -159,4 +159,60 @@ class DotUtils {
 
     return Point(newX, newY);
   }
+
+  Point<double> moveLeft({
+    required Point<double> original,
+    required double deltaX,
+    required Rect imageRect,
+    required Area originalArea,
+  }) {
+    final newX = min(
+      max(imageRect.left, original.x + deltaX),
+      originalArea.topRight.x - minDistanceDots,
+    );
+
+    return Point(newX, original.y);
+  }
+
+  Point<double> moveRight({
+    required Point<double> original,
+    required double deltaX,
+    required Rect imageRect,
+    required Area originalArea,
+  }) {
+    final newX = max(
+      min(imageRect.right, original.x + deltaX),
+      originalArea.topLeft.x + minDistanceDots,
+    );
+
+    return Point(newX, original.y);
+  }
+
+  Point<double> moveTop({
+    required Point<double> original,
+    required double deltaY,
+    required Rect imageRect,
+    required Area originalArea,
+  }) {
+    final newY = min(
+      max(imageRect.top, original.y + deltaY),
+      originalArea.bottomLeft.y - minDistanceDots,
+    );
+
+    return Point(original.x, newY);
+  }
+
+  Point<double> moveBottom({
+    required Point<double> original,
+    required double deltaY,
+    required Rect imageRect,
+    required Area originalArea,
+  }) {
+    final newY = max(
+      min(imageRect.bottom, original.y + deltaY),
+      originalArea.topLeft.y + minDistanceDots,
+    );
+
+    return Point(original.x, newY);
+  }
 }

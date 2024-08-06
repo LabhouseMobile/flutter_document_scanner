@@ -28,6 +28,7 @@ class CropBloc extends Bloc<CropEvent, CropState> {
         super(CropState.init()) {
     on<CropAreaInitialized>(_areaInitialized);
     on<CropDotMoved>(_dotMoved);
+    on<CropSideMoved>(_sideMoved);
     on<CropPhotoByAreaCropped>(_photoByAreaCropped);
   }
 
@@ -46,10 +47,8 @@ class CropBloc extends Bloc<CropEvent, CropState> {
     Emitter<CropState> emit,
   ) async {
     newScreenSize = Size(
-      (event.screenSize.width - event.positionImage.left) -
-          event.positionImage.right,
-      (event.screenSize.height - event.positionImage.top) -
-          event.positionImage.bottom,
+      (event.screenSize.width - event.positionImage.left) - event.positionImage.right,
+      (event.screenSize.height - event.positionImage.top) - event.positionImage.bottom,
     );
 
     _imageRect = _imageUtils.imageRect(
@@ -156,15 +155,100 @@ class CropBloc extends Bloc<CropEvent, CropState> {
           bottomLeft: result,
         );
         break;
+    }
 
-      case DotPosition.all:
-        newArea = _dotUtils.moveArea(
-          original: state.area,
+    emit(
+      state.copyWith(
+        area: newArea,
+      ),
+    );
+  }
+
+  Future<void> _sideMoved(
+    CropSideMoved event,
+    Emitter<CropState> emit,
+  ) async {
+    Area newArea;
+
+    switch (event.sidePosition) {
+      case SidePosition.left:
+        final newTopLeft = _dotUtils.moveLeft(
+          original: state.area.topLeft,
           deltaX: event.deltaX,
-          deltaY: event.deltaY,
           imageRect: _imageRect,
+          originalArea: state.area,
+        );
+        final newBottomLeft = _dotUtils.moveLeft(
+          original: state.area.bottomLeft,
+          deltaX: event.deltaX,
+          imageRect: _imageRect,
+          originalArea: state.area,
         );
 
+        newArea = state.area.copyWith(
+          topLeft: newTopLeft,
+          bottomLeft: newBottomLeft,
+        );
+        break;
+
+      case SidePosition.right:
+        final newTopRight = _dotUtils.moveRight(
+          original: state.area.topRight,
+          deltaX: event.deltaX,
+          imageRect: _imageRect,
+          originalArea: state.area,
+        );
+        final newBottomRight = _dotUtils.moveRight(
+          original: state.area.bottomRight,
+          deltaX: event.deltaX,
+          imageRect: _imageRect,
+          originalArea: state.area,
+        );
+
+        newArea = state.area.copyWith(
+          topRight: newTopRight,
+          bottomRight: newBottomRight,
+        );
+        break;
+
+      case SidePosition.top:
+        final newTopLeft = _dotUtils.moveTop(
+          original: state.area.topLeft,
+          deltaY: event.deltaY,
+          imageRect: _imageRect,
+          originalArea: state.area,
+        );
+        final newTopRight = _dotUtils.moveTop(
+          original: state.area.topRight,
+          deltaY: event.deltaY,
+          imageRect: _imageRect,
+          originalArea: state.area,
+        );
+
+        newArea = state.area.copyWith(
+          topLeft: newTopLeft,
+          topRight: newTopRight,
+        );
+        break;
+
+      case SidePosition.bottom:
+        final newBottomLeft = _dotUtils.moveBottom(
+          original: state.area.bottomLeft,
+          deltaY: event.deltaY,
+          imageRect: _imageRect,
+          originalArea: state.area,
+        );
+        final newBottomRight = _dotUtils.moveBottom(
+          original: state.area.bottomRight,
+          deltaY: event.deltaY,
+          imageRect: _imageRect,
+          originalArea: state.area,
+        );
+
+        newArea = state.area.copyWith(
+          bottomLeft: newBottomLeft,
+          bottomRight: newBottomRight,
+        );
         break;
     }
 

@@ -33,10 +33,15 @@ class BorderCropAreaPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
+    final borderPaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = widthBorderArea
       ..color = colorBorderArea;
+
+    final contentPaint = Paint()
+      ..style = PaintingStyle.fill
+      ..strokeWidth = widthBorderArea
+      ..color = colorBorderArea.withOpacity(0.4);
 
     final path = Path()
       ..moveTo(area.topLeft.x, area.topLeft.y)
@@ -45,7 +50,9 @@ class BorderCropAreaPainter extends CustomPainter {
       ..lineTo(area.bottomLeft.x, area.bottomLeft.y)
       ..close();
 
-    canvas.drawPath(path, paint);
+    canvas
+      ..drawPath(path, borderPaint)
+      ..drawPath(path, contentPaint);
   }
 
   @override

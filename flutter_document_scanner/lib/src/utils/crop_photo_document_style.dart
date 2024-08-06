@@ -6,7 +6,6 @@
 // https://opensource.org/licenses/MIT.
 
 import 'dart:math';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_document_scanner/src/models/area.dart';
@@ -24,7 +23,6 @@ class CropPhotoDocumentStyle {
     this.left = 0,
     this.right = 0,
     this.maskColor,
-    this.maskFilter,
     this.dotSize = 24,
     this.dotRadius = 30,
     this.defaultAreaInitial = const Area(
@@ -36,6 +34,8 @@ class CropPhotoDocumentStyle {
     this.minDistanceDots = 30,
     this.colorBorderArea = Colors.white,
     this.widthBorderArea = 3,
+    this.biggerSide = 40,
+    this.smallSide = 8,
   });
 
   /// Hide the app bar default.
@@ -66,9 +66,6 @@ class CropPhotoDocumentStyle {
   /// Mask color shown for cropping
   final Color? maskColor;
 
-  /// Mask filter shown for cropping
-  final ui.ImageFilter? maskFilter;
-
   /// Size of the dots
   final double dotSize;
 
@@ -86,4 +83,10 @@ class CropPhotoDocumentStyle {
 
   /// Width of the border covering the clipping mask
   final double widthBorderArea;
+
+  // Width of the draggable side
+  final double biggerSide;
+
+  // Width of the draggable side
+  final double smallSide;
 }

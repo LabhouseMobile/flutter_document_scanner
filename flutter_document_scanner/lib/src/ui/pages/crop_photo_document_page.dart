@@ -16,7 +16,6 @@ import 'package:flutter_document_scanner/src/bloc/app/app_event.dart';
 import 'package:flutter_document_scanner/src/bloc/crop/crop_bloc.dart';
 import 'package:flutter_document_scanner/src/bloc/crop/crop_event.dart';
 import 'package:flutter_document_scanner/src/bloc/crop/crop_state.dart';
-import 'package:flutter_document_scanner/src/ui/widgets/mask_crop.dart';
 import 'package:flutter_document_scanner/src/utils/border_crop_area_painter.dart';
 import 'package:flutter_document_scanner/src/utils/dot_utils.dart';
 
@@ -127,17 +126,6 @@ class _CropView extends StatelessWidget {
                   ),
                 ),
 
-                // * Mask
-                BlocSelector<CropBloc, CropState, Area>(
-                  selector: (state) => state.area,
-                  builder: (context, state) {
-                    return MaskCrop(
-                      area: state,
-                      cropPhotoDocumentStyle: cropPhotoDocumentStyle,
-                    );
-                  },
-                ),
-
                 // * Border Mask
                 BlocSelector<CropBloc, CropState, Area>(
                   selector: (state) => state.area,
@@ -153,184 +141,29 @@ class _CropView extends StatelessWidget {
                   },
                 ),
 
-                // * Dot - All
-                BlocSelector<CropBloc, CropState, Area>(
-                  selector: (state) => state.area,
-                  builder: (context, state) {
-                    return GestureDetector(
-                      onPanUpdate: (details) {
-                        context.read<CropBloc>().add(
-                              CropDotMoved(
-                                deltaX: details.delta.dx,
-                                deltaY: details.delta.dy,
-                                dotPosition: DotPosition.all,
-                              ),
-                            );
-                      },
-                      child: Container(
-                        color: Colors.transparent,
-                        width: state.topLeft.x + state.topRight.x,
-                        height: state.topLeft.y + state.topRight.y,
-                      ),
-                    );
-                  },
-                ),
-
                 // * Dot - Top Left
-                BlocSelector<CropBloc, CropState, Point>(
-                  selector: (state) => state.area.topLeft,
-                  builder: (context, state) {
-                    return Positioned(
-                      left: state.x - (cropPhotoDocumentStyle.dotSize / 2),
-                      top: state.y - (cropPhotoDocumentStyle.dotSize / 2),
-                      child: GestureDetector(
-                        onPanUpdate: (details) {
-                          context.read<CropBloc>().add(
-                                CropDotMoved(
-                                  deltaX: details.delta.dx,
-                                  deltaY: details.delta.dy,
-                                  dotPosition: DotPosition.topLeft,
-                                ),
-                              );
-                        },
-                        child: Container(
-                          color: Colors.transparent,
-                          width: cropPhotoDocumentStyle.dotSize,
-                          height: cropPhotoDocumentStyle.dotSize,
-                          child: Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                cropPhotoDocumentStyle.dotRadius,
-                              ),
-                              child: Container(
-                                width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                _buildDraggableDot(context, cropPhotoDocumentStyle, DotPosition.topLeft),
 
                 // * Dot - Top Right
-                BlocSelector<CropBloc, CropState, Point>(
-                  selector: (state) => state.area.topRight,
-                  builder: (context, state) {
-                    return Positioned(
-                      left: state.x - (cropPhotoDocumentStyle.dotSize / 2),
-                      top: state.y - (cropPhotoDocumentStyle.dotSize / 2),
-                      child: GestureDetector(
-                        onPanUpdate: (details) {
-                          context.read<CropBloc>().add(
-                                CropDotMoved(
-                                  deltaX: details.delta.dx,
-                                  deltaY: details.delta.dy,
-                                  dotPosition: DotPosition.topRight,
-                                ),
-                              );
-                        },
-                        child: Container(
-                          color: Colors.transparent,
-                          width: cropPhotoDocumentStyle.dotSize,
-                          height: cropPhotoDocumentStyle.dotSize,
-                          child: Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                cropPhotoDocumentStyle.dotRadius,
-                              ),
-                              child: Container(
-                                width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                _buildDraggableDot(context, cropPhotoDocumentStyle, DotPosition.topRight),
 
                 // * Dot - Bottom Left
-                BlocSelector<CropBloc, CropState, Point>(
-                  selector: (state) => state.area.bottomLeft,
-                  builder: (context, state) {
-                    return Positioned(
-                      left: state.x - (cropPhotoDocumentStyle.dotSize / 2),
-                      top: state.y - (cropPhotoDocumentStyle.dotSize / 2),
-                      child: GestureDetector(
-                        onPanUpdate: (details) {
-                          context.read<CropBloc>().add(
-                                CropDotMoved(
-                                  deltaX: details.delta.dx,
-                                  deltaY: details.delta.dy,
-                                  dotPosition: DotPosition.bottomLeft,
-                                ),
-                              );
-                        },
-                        child: Container(
-                          color: Colors.transparent,
-                          width: cropPhotoDocumentStyle.dotSize,
-                          height: cropPhotoDocumentStyle.dotSize,
-                          child: Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                cropPhotoDocumentStyle.dotRadius,
-                              ),
-                              child: Container(
-                                width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                _buildDraggableDot(context, cropPhotoDocumentStyle, DotPosition.bottomLeft),
 
                 // * Dot - Bottom Right
-                BlocSelector<CropBloc, CropState, Point>(
-                  selector: (state) => state.area.bottomRight,
-                  builder: (context, state) {
-                    return Positioned(
-                      left: state.x - (cropPhotoDocumentStyle.dotSize / 2),
-                      top: state.y - (cropPhotoDocumentStyle.dotSize / 2),
-                      child: GestureDetector(
-                        onPanUpdate: (details) {
-                          context.read<CropBloc>().add(
-                                CropDotMoved(
-                                  deltaX: details.delta.dx,
-                                  deltaY: details.delta.dy,
-                                  dotPosition: DotPosition.bottomRight,
-                                ),
-                              );
-                        },
-                        child: Container(
-                          color: Colors.transparent,
-                          width: cropPhotoDocumentStyle.dotSize,
-                          height: cropPhotoDocumentStyle.dotSize,
-                          child: Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                cropPhotoDocumentStyle.dotRadius,
-                              ),
-                              child: Container(
-                                width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                _buildDraggableDot(context, cropPhotoDocumentStyle, DotPosition.bottomRight),
+
+                // * Side - Left
+                _buildDraggableSide(context, cropPhotoDocumentStyle, SidePosition.left),
+
+                // * Side - Right
+                _buildDraggableSide(context, cropPhotoDocumentStyle, SidePosition.right),
+
+                // * Side - Top
+                _buildDraggableSide(context, cropPhotoDocumentStyle, SidePosition.top),
+
+                // * Side - Bottom
+                _buildDraggableSide(context, cropPhotoDocumentStyle, SidePosition.bottom),
               ],
             ),
           ),
@@ -338,4 +171,144 @@ class _CropView extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildDraggableDot(BuildContext context, CropPhotoDocumentStyle style, DotPosition position) {
+  return BlocSelector<CropBloc, CropState, Point>(
+    selector: (state) {
+      switch (position) {
+        case DotPosition.topLeft:
+          return state.area.topLeft;
+        case DotPosition.topRight:
+          return state.area.topRight;
+        case DotPosition.bottomLeft:
+          return state.area.bottomLeft;
+        case DotPosition.bottomRight:
+          return state.area.bottomRight;
+      }
+    },
+    builder: (context, point) {
+      return Positioned(
+        left: point.x - (style.dotSize / 2),
+        top: point.y - (style.dotSize / 2),
+        child: GestureDetector(
+          onPanUpdate: (details) {
+            context.read<CropBloc>().add(
+                  CropDotMoved(
+                    deltaX: details.delta.dx,
+                    deltaY: details.delta.dy,
+                    dotPosition: position,
+                  ),
+                );
+          },
+          child: Container(
+            color: Colors.transparent,
+            width: style.dotSize,
+            height: style.dotSize,
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(style.dotRadius),
+                child: Container(
+                  width: style.dotSize - (2 * 2),
+                  height: style.dotSize - (2 * 2),
+                  color: style.colorBorderArea,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Widget _buildDraggableSide(BuildContext context, CropPhotoDocumentStyle style, SidePosition position) {
+  return BlocSelector<CropBloc, CropState, Area>(
+    selector: (state) => state.area,
+    builder: (context, area) {
+      double _distanceBetweenPoints(Point<double> p1, Point<double> p2) {
+        return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2));
+      }
+
+      double _calculateAngle(Point<double> p1, Point<double> p2) {
+        return atan2(p2.y - p1.y, p2.x - p1.x);
+      }
+
+      // Variables to hold the properties of the draggable side
+      double angle;
+      Point<double> start, end, middlePoint;
+
+      // Define the size of the red container
+      double redContainerWidth = 8;
+      double redContainerHeight = 32;
+
+      switch (position) {
+        case SidePosition.left:
+          start = area.topLeft;
+          end = area.bottomLeft;
+          angle = _calculateAngle(start, end) - pi / 2;
+          redContainerWidth = style.smallSide;
+          redContainerHeight = style.biggerSide;
+          break;
+        case SidePosition.right:
+          start = area.topRight;
+          end = area.bottomRight;
+          angle = _calculateAngle(start, end) - pi / 2;
+          redContainerWidth = style.smallSide;
+          redContainerHeight = style.biggerSide;
+          break;
+        case SidePosition.top:
+          start = area.topLeft;
+          end = area.topRight;
+          angle = _calculateAngle(start, end);
+          redContainerWidth = style.biggerSide;
+          redContainerHeight = style.smallSide;
+          break;
+        case SidePosition.bottom:
+          start = area.bottomLeft;
+          end = area.bottomRight;
+          angle = _calculateAngle(start, end);
+          redContainerWidth = style.biggerSide;
+          redContainerHeight = style.smallSide;
+          break;
+      }
+
+      // Calculate the middle point between start and end
+      middlePoint = Point(
+        (start.x + end.x) / 2,
+        (start.y + end.y) / 2,
+      );
+
+      return Stack(
+        children: [
+          Positioned(
+            left: middlePoint.x - (redContainerWidth / 2),
+            top: middlePoint.y - (redContainerHeight / 2),
+            child: Transform.rotate(
+              angle: angle,
+              child: GestureDetector(
+                onPanUpdate: (details) {
+                  context.read<CropBloc>().add(
+                        CropSideMoved(
+                          deltaX: details.delta.dx,
+                          deltaY: details.delta.dy,
+                          sidePosition: position,
+                        ),
+                      );
+                },
+                child: Container(
+                  width: redContainerWidth,
+                  height: redContainerHeight,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(24)),
+                    color: style.colorBorderArea,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }

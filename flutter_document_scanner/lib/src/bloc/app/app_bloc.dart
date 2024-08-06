@@ -46,12 +46,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         contourInitial: response,
       ),
     );
-
-    emit(
-      state.copyWith(
-        currentPage: AppPages.cropPhoto,
-      ),
-    );
   }
 
   /// It will change the state and
@@ -68,7 +62,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     );
   }
 
-  /// It will change the state and then change page to [AppPages.editDocument]
+  /// It will change the state
   Future<void> _loadCroppedPhoto(
     AppLoadCroppedPhoto event,
     Emitter<AppState> emit,

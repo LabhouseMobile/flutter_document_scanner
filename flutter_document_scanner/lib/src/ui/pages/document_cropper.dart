@@ -14,10 +14,10 @@ import 'package:flutter_document_scanner/src/utils/crop_photo_document_style.dar
 import 'package:flutter_document_scanner/src/utils/general_styles.dart';
 
 /// This class is the main page of the application
-class DocumentScanner extends StatelessWidget {
+class DocumentCropper extends StatelessWidget {
   /// Create a main page with properties and methods
   /// to manage the document scanner.
-  const DocumentScanner({
+  const DocumentCropper({
     super.key,
     this.controller,
     this.generalStyles = const GeneralStyles(),
@@ -30,7 +30,7 @@ class DocumentScanner extends StatelessWidget {
   final DocumentScannerController? controller;
 
   /// [generalStyles] is the [GeneralStyles] that will be used to style the
-  /// [DocumentScanner] widget.
+  /// [DocumentCropper] widget.
   final GeneralStyles generalStyles;
 
   /// To change the animation performed when switching between screens

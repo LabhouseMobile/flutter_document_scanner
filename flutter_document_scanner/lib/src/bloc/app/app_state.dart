@@ -73,7 +73,6 @@ class AppState extends Equatable {
   /// Creates a copy of this state but with the given fields replaced with
   /// the new values.
   AppState copyWith({
-    AppPages? currentPage,
     File? pictureInitial,
     AppStatus? statusCropPhoto,
     Object? contourInitial = valueNull,

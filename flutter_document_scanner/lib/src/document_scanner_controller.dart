@@ -28,9 +28,6 @@ class DocumentScannerController {
     return _appBloc.stream.map((data) => data.statusCropPhoto).distinct();
   }
 
-  /// Will return the picture taken on the [TakePhotoDocumentPage].
-  File? get pictureTaken => _appBloc.state.pictureInitial;
-
   /// Will return the picture cropped on the [CropPhotoDocumentPage].
   Uint8List? get pictureCropped => _appBloc.state.pictureCropped;
 

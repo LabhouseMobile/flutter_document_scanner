@@ -62,9 +62,6 @@ enum DotPosition {
 
   /// The bottom left dot
   bottomLeft,
-
-  /// The all dots
-  all,
 }
 
 /// Move the dot to the new position
@@ -90,6 +87,23 @@ class CropDotMoved extends CropEvent {
         deltaX,
         deltaY,
         dotPosition,
+      ];
+}
+
+enum SidePosition { left, right, top, bottom }
+
+class CropSideMoved extends CropEvent {
+  CropSideMoved({this.deltaX = 0.0, this.deltaY = 0.0, required this.sidePosition});
+
+  final double deltaX;
+  final double deltaY;
+  final SidePosition sidePosition;
+
+  @override
+  List<Object?> get props => [
+        deltaX,
+        deltaY,
+        sidePosition,
       ];
 }
 
