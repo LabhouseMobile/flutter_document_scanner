@@ -157,27 +157,4 @@ class ImageUtils {
       return null;
     }
   }
-
-  /// Apply the selected [filter] with the opencv library
-  Future<Uint8List> applyFilter(
-    Uint8List byteData,
-    FilterType filter,
-  ) async {
-    try {
-      final newImage = await _platform.applyFilter(
-        byteData: byteData,
-        filter: filter,
-      );
-
-      if (newImage == null) {
-        return byteData;
-      }
-
-      return newImage;
-    } catch (e) {
-      // TODO(utils): add error handler
-      // print(e);
-      return byteData;
-    }
-  }
 }

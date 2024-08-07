@@ -15,14 +15,10 @@ import 'package:flutter_document_scanner/src/models/area.dart';
 class CropPhotoDocumentStyle {
   /// Create a instance of [CropPhotoDocumentStyle].
   const CropPhotoDocumentStyle({
-    this.hideAppBarDefault = false,
-    this.textButtonSave = 'CROP',
-    this.children,
     this.top = 0,
     this.bottom = 0,
     this.left = 0,
     this.right = 0,
-    this.maskColor,
     this.dotSize = 24,
     this.dotRadius = 30,
     this.defaultAreaInitial = const Area(
@@ -37,15 +33,6 @@ class CropPhotoDocumentStyle {
     this.biggerSide = 40,
     this.smallSide = 8,
   });
-
-  /// Hide the app bar default.
-  final bool hideAppBarDefault;
-
-  /// Text of save button
-  final String textButtonSave;
-
-  /// Widget to be displayed on the page
-  final List<Widget>? children;
 
   /// The distance that the top edge of the image is inserted from
   /// the top of the stack.
@@ -62,9 +49,6 @@ class CropPhotoDocumentStyle {
   /// The distance that the right edge of the image is inserted from
   /// the right of the stack.
   final double right;
-
-  /// Mask color shown for cropping
-  final Color? maskColor;
 
   /// Size of the dots
   final double dotSize;

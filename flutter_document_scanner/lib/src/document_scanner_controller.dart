@@ -46,25 +46,9 @@ class DocumentScannerController {
     );
   }
 
-  /// Change current page by [AppPages]
-  Future<void> changePage(AppPages page) async {
-    _appBloc.add(AppPageChanged(page));
-  }
-
   /// Cutting the photo and adjusting the perspective
   Future<void> cropPhoto() async {
     _appBloc.add(AppPhotoCropped());
-  }
-
-  /// Apply [FilterType] using OpenCV
-  Future<void> applyFilter(FilterType type) async {
-    _appBloc.add(AppFilterApplied(filter: type));
-  }
-
-  /// Save the document with filter and cropping area
-  /// It will return it as [Uint8List] in [DocumentScanner]
-  Future<void> savePhotoDocument() async {
-    _appBloc.add(AppStartedSavingDocument());
   }
 
   /// Dispose the [AppBloc]
