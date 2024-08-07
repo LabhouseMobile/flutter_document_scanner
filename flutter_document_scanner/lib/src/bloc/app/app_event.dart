@@ -35,17 +35,24 @@ class AppExternalImageContoursFound extends AppEvent {
       ];
 }
 
-/// Event to change the page
-class AppPageChanged extends AppEvent {
+/// Event when an image is passed to it
+class AppSetInitialPicture extends AppEvent {
   /// Create an event instance
-  AppPageChanged(this.newPage);
+  AppSetInitialPicture({
+    required this.initialPicture,
+    this.area,
+  });
 
-  /// New page to show
-  final AppPages newPage;
+  /// Image to find contours
+  final File initialPicture;
+
+  /// Minimum area to detect a contour
+  final Area? area;
 
   @override
   List<Object?> get props => [
-        newPage,
+        initialPicture,
+        area,
       ];
 }
 

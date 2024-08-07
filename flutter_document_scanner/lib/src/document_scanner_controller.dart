@@ -31,6 +31,8 @@ class DocumentScannerController {
   /// Will return the picture cropped on the [CropPhotoDocumentPage].
   Uint8List? get pictureCropped => _appBloc.state.pictureCropped;
 
+  Area? get area => _appBloc.state.contourInitial;
+
   /// Find the contour from an external image like gallery
   ///
   /// [minContourArea] is default 80000.0
@@ -42,6 +44,18 @@ class DocumentScannerController {
       AppExternalImageContoursFound(
         image: image,
         minContourArea: minContourArea,
+      ),
+    );
+  }
+
+  Future<void> setInitialPicture({
+    required File initialPicture,
+    required Area? area,
+  }) async {
+    _appBloc.add(
+      AppSetInitialPicture(
+        initialPicture: initialPicture,
+        area: area,
       ),
     );
   }

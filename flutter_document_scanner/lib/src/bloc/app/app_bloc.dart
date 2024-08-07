@@ -23,6 +23,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<AppExternalImageContoursFound>(_externalImageContoursFound);
     on<AppPhotoCropped>(_photoCropped);
     on<AppLoadCroppedPhoto>(_loadCroppedPhoto);
+    on<AppSetInitialPicture>(_setInitialPicture);
   }
 
   final ImageUtils _imageUtils;
@@ -71,6 +72,18 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       state.copyWith(
         statusCropPhoto: AppStatus.success,
         pictureCropped: event.image,
+        contourInitial: event.area,
+      ),
+    );
+  }
+
+  Future<void> _setInitialPicture(
+    AppSetInitialPicture event,
+    Emitter<AppState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        pictureInitial: event.initialPicture,
         contourInitial: event.area,
       ),
     );

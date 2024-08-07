@@ -174,6 +174,8 @@ class _CropView extends StatelessWidget {
 }
 
 Widget _buildDraggableDot(BuildContext context, CropPhotoDocumentStyle style, DotPosition position) {
+  const invisiblePadding = 8.0;
+
   return BlocSelector<CropBloc, CropState, Point>(
     selector: (state) {
       switch (position) {
@@ -189,8 +191,8 @@ Widget _buildDraggableDot(BuildContext context, CropPhotoDocumentStyle style, Do
     },
     builder: (context, point) {
       return Positioned(
-        left: point.x - (style.dotSize / 2),
-        top: point.y - (style.dotSize / 2),
+        left: point.x - (style.dotSize / 2) - invisiblePadding,
+        top: point.y - (style.dotSize / 2) - invisiblePadding,
         child: GestureDetector(
           onPanUpdate: (details) {
             context.read<CropBloc>().add(
@@ -201,17 +203,20 @@ Widget _buildDraggableDot(BuildContext context, CropPhotoDocumentStyle style, Do
                   ),
                 );
           },
-          child: Container(
-            color: Colors.transparent,
-            width: style.dotSize,
-            height: style.dotSize,
-            child: Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(style.dotRadius),
-                child: Container(
-                  width: style.dotSize - (2 * 2),
-                  height: style.dotSize - (2 * 2),
-                  color: style.colorBorderArea,
+          child: Padding(
+            padding: const EdgeInsets.all(invisiblePadding),
+            child: Container(
+              color: Colors.transparent,
+              width: style.dotSize,
+              height: style.dotSize,
+              child: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(style.dotRadius),
+                  child: Container(
+                    width: style.dotSize - (2 * 2),
+                    height: style.dotSize - (2 * 2),
+                    color: style.colorBorderArea,
+                  ),
                 ),
               ),
             ),
@@ -223,13 +228,11 @@ Widget _buildDraggableDot(BuildContext context, CropPhotoDocumentStyle style, Do
 }
 
 Widget _buildDraggableSide(BuildContext context, CropPhotoDocumentStyle style, SidePosition position) {
+  const invisiblePadding = 12.0;
+
   return BlocSelector<CropBloc, CropState, Area>(
     selector: (state) => state.area,
     builder: (context, area) {
-      double _distanceBetweenPoints(Point<double> p1, Point<double> p2) {
-        return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2));
-      }
-
       double _calculateAngle(Point<double> p1, Point<double> p2) {
         return atan2(p2.y - p1.y, p2.x - p1.x);
       }
@@ -279,35 +282,34 @@ Widget _buildDraggableSide(BuildContext context, CropPhotoDocumentStyle style, S
         (start.y + end.y) / 2,
       );
 
-      return Stack(
-        children: [
-          Positioned(
-            left: middlePoint.x - (redContainerWidth / 2),
-            top: middlePoint.y - (redContainerHeight / 2),
-            child: Transform.rotate(
-              angle: angle,
-              child: GestureDetector(
-                onPanUpdate: (details) {
-                  context.read<CropBloc>().add(
-                        CropSideMoved(
-                          deltaX: details.delta.dx,
-                          deltaY: details.delta.dy,
-                          sidePosition: position,
-                        ),
-                      );
-                },
-                child: Container(
-                  width: redContainerWidth,
-                  height: redContainerHeight,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(24)),
-                    color: style.colorBorderArea,
-                  ),
+      return Positioned(
+        left: middlePoint.x - (redContainerWidth / 2) - invisiblePadding,
+        top: middlePoint.y - (redContainerHeight / 2) - invisiblePadding,
+        child: Transform.rotate(
+          angle: angle,
+          child: Padding(
+            padding: const EdgeInsets.all(invisiblePadding),
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                context.read<CropBloc>().add(
+                      CropSideMoved(
+                        deltaX: details.delta.dx,
+                        deltaY: details.delta.dy,
+                        sidePosition: position,
+                      ),
+                    );
+              },
+              child: Container(
+                width: redContainerWidth,
+                height: redContainerHeight,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(24)),
+                  color: style.colorBorderArea,
                 ),
               ),
             ),
           ),
-        ],
+        ),
       );
     },
   );
